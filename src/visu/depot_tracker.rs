@@ -2,7 +2,7 @@ use eframe::egui::{CentralPanel, Context, SidePanel};
 
 use crate::{
     depot::{Depot, Transaction},
-    instruments::Stock,
+    instruments::{Instrument, Stock},
 };
 
 use super::Tab;
@@ -18,7 +18,7 @@ impl DepotTracker {
         depot.deposit(5110.13);
         let tx = Transaction {
             amount: 10,
-            instrument: depot.add_instrument(Stock::new("SPY".into()), 592.13),
+            instrument: Instrument::new(Stock::new("SPY".into()), 592.13),
             price: 590.05,
             fees: 13.6,
         };

@@ -1,6 +1,6 @@
-use super::Instrument;
+use super::InstrumentWrapped;
 
 pub trait InstrumentSpec {
-    fn as_instrument(self) -> Instrument;
+    fn as_wrapped(self) -> InstrumentWrapped;
     fn name(&self) -> &str;
 }

@@ -1,4 +1,4 @@
-use super::{instrument_spec::InstrumentSpec, Instrument};
+use super::{instrument_spec::InstrumentSpec, InstrumentWrapped};
 
 #[derive(Debug)]
 pub struct Stock {
@@ -12,8 +12,8 @@ impl Stock {
 }
 
 impl InstrumentSpec for Stock {
-    fn as_instrument(self) -> Instrument {
-        Instrument::Stock(self)
+    fn as_wrapped(self) -> InstrumentWrapped {
+        InstrumentWrapped::Stock(self)
     }
 
     fn name(&self) -> &str {

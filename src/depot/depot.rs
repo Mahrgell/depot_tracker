@@ -1,4 +1,6 @@
-use crate::instruments::{DataProvider, InstrumentId, InstrumentList, InstrumentSpec, MValue};
+use std::rc::Rc;
+
+use crate::instruments::{Instrument, MValue};
 
 use super::{Position, Transaction};
 
@@ -6,17 +8,12 @@ use super::{Position, Transaction};
 pub struct Depot {
     positions: Vec<Position>,
     cash: MValue,
-    instruments: InstrumentList,
-    data_provider: DataProvider,
+    _instruments: Vec<Instrument>,
 }
 
 impl Depot {
-    pub fn instruments(&self) -> &InstrumentList {
-        &self.instruments
-    }
-
-    pub fn data_provider(&self) -> &DataProvider {
-        &self.data_provider
+    pub fn _instruments(&self) -> &Vec<Instrument> {
+        &self._instruments
     }
 
     pub fn deposit(&mut self, amount: MValue) {
@@ -28,7 +25,7 @@ impl Depot {
         if let Some(i) = self
             .positions
             .iter()
-            .position(|pos| pos.instrument == tx.instrument)
+            .position(|pos| Rc::ptr_eq(&pos.instrument, &tx.instrument))
         {
             let pos = &mut self.positions[i];
             if pos.amount != -tx.amount {
@@ -40,11 +37,5 @@ impl Depot {
             self.positions.push(Position::from_transaction(&tx));
         }
         self.cash -= tx.amount as f32 * tx.price + tx.fees;
-    }
-
-    pub fn add_instrument<I: InstrumentSpec>(&mut self, instr: I, price: MValue) -> InstrumentId {
-        let id = self.instruments.add(instr);
-        self.data_provider.add_with_price(price);
-        id
     }
 }
