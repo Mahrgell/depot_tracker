@@ -1,8 +1,9 @@
+use chrono::NaiveDate;
 use eframe::egui::{CentralPanel, Context, SidePanel};
 
 use crate::{
     depot::{Depot, Transaction},
-    instruments::{Instrument, Stock},
+    instruments::{Instrument, OptionType, Stock, StockOption},
 };
 
 use super::Tab;
@@ -15,17 +16,25 @@ pub struct DepotTracker {
 impl DepotTracker {
     pub fn new() -> Self {
         let mut depot = Depot::default();
-        depot.deposit(5110.13);
-        let tx = Transaction {
+        depot.deposit(10000.);
+        let spy = Instrument::new(Stock::new("SPY".into()), 592.13);
+        let tx1 = Transaction {
             amount: 10,
-            instrument: Instrument::new(Stock::new("SPY".into()), 592.13),
-            price: 590.05,
+            instrument: spy.clone(),
+            price: 590.00,
             fees: 13.6,
         };
         dbg!(&depot);
-        depot.apply_transaction(&tx);
+        depot.apply_transaction(&tx1);
         dbg!(&depot);
-        depot.apply_transaction(&tx);
+        let tx2 = Transaction {
+            amount: -2,
+            instrument: Instrument::new(StockOption::new(OptionType::Put, spy.clone(), 585., 100, NaiveDate::from_ymd_opt(2025, 03, 25).unwrap()),1.12),
+            price: 1.0,
+            fees: 4.,
+        };
+        
+        depot.apply_transaction(&tx2);
         dbg!(&depot);
 
         Self {

@@ -22,6 +22,10 @@ impl Instrument {
         })
     }
 
+    pub fn info(&self) -> &InstrumentWrapped {
+        &self.instr
+    }
+
     pub fn price(&self) -> MValue {
         self.data.read().unwrap().price
     }
@@ -43,5 +47,9 @@ impl InstrumentSpec for InstrumentWrapped {
 
     fn name(&self) -> &str {
         self.to_spec().name()
+    }
+
+    fn factor(&self) -> u32 {
+        self.to_spec().factor()
     }
 }

@@ -9,6 +9,10 @@ impl Stock {
     pub fn new(symbol: String) -> Self {
         Stock { symbol }
     }
+
+    pub fn symbol(&self) -> &String {
+        &self.symbol
+    }
 }
 
 impl InstrumentSpec for Stock {
@@ -18,5 +22,9 @@ impl InstrumentSpec for Stock {
 
     fn name(&self) -> &str {
         &self.symbol
+    }
+
+    fn factor(&self) -> u32 {
+        1
     }
 }

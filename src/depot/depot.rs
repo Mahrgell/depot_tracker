@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use crate::instruments::{Instrument, MValue};
+use crate::instruments::{Instrument, InstrumentSpec, MValue};
 
 use super::{Position, Transaction};
 
@@ -36,6 +36,6 @@ impl Depot {
         } else {
             self.positions.push(Position::from_transaction(&tx));
         }
-        self.cash -= tx.amount as f32 * tx.price + tx.fees;
+        self.cash -= tx.amount as f32 * tx.price * tx.instrument.info().factor() as f32 + tx.fees;
     }
 }
