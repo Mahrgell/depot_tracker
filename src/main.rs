@@ -1,5 +1,6 @@
 mod depot;
 mod instruments;
+mod properties;
 mod visu;
 
 use visu::DepotTracker;

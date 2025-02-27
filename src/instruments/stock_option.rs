@@ -21,10 +21,29 @@ pub struct StockOption {
 }
 
 impl StockOption {
-    pub fn new(o_type: OptionType, underlying: Rc<Instrument>, strike: MValue, factor: u32, expiry: NaiveDate) -> Self {
+    pub fn new(
+        o_type: OptionType,
+        underlying: Rc<Instrument>,
+        strike: MValue,
+        factor: u32,
+        expiry: NaiveDate,
+    ) -> Self {
         if let InstrumentWrapped::Stock(s) = underlying.info() {
-            let name = format!("{:?} {} {} - {}", o_type, s.symbol(), strike, expiry.format("%d.%m.%Y")); 
-            Self { name, o_type, underlying, strike, factor, expiry }
+            let name = format!(
+                "{:?} {} {} - {}",
+                o_type,
+                s.symbol(),
+                strike,
+                expiry.format("%d.%m.%Y")
+            );
+            Self {
+                name,
+                o_type,
+                underlying,
+                strike,
+                factor,
+                expiry,
+            }
         } else {
             panic!("Stock option not based on stock")
         }

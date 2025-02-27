@@ -29,11 +29,20 @@ impl DepotTracker {
         dbg!(&depot);
         let tx2 = Transaction {
             amount: -2,
-            instrument: Instrument::new(StockOption::new(OptionType::Put, spy.clone(), 585., 100, NaiveDate::from_ymd_opt(2025, 03, 25).unwrap()),1.12),
+            instrument: Instrument::new(
+                StockOption::new(
+                    OptionType::Put,
+                    spy.clone(),
+                    585.,
+                    100,
+                    NaiveDate::from_ymd_opt(2025, 03, 25).unwrap(),
+                ),
+                1.12,
+            ),
             price: 1.0,
             fees: 4.,
         };
-        
+
         depot.apply_transaction(&tx2);
         dbg!(&depot);
 
@@ -59,7 +68,7 @@ impl eframe::App for DepotTracker {
         });
 
         CentralPanel::default().show(ctx, |ui| {
-            self.active_tab.show(ui);
+            self.active_tab.show(ui, &self.depot);
         });
     }
 }

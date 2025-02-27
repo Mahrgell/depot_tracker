@@ -1,5 +1,7 @@
 use std::{rc::Rc, sync::RwLock};
 
+use crate::properties::Property;
+
 use super::{InstrumentData, InstrumentSpec, MValue, Stock, StockOption};
 
 #[derive(Debug)]
@@ -51,5 +53,15 @@ impl InstrumentSpec for InstrumentWrapped {
 
     fn factor(&self) -> u32 {
         self.to_spec().factor()
+    }
+}
+
+impl<T: Property<Instrument>> Property<Rc<Instrument>> for T {
+    fn header(&self) -> String {
+        <T as Property<Instrument>>::header(self)
+    }
+
+    fn format_data(&self, t: &Rc<Instrument>) -> String {
+        self.format_data(t.as_ref())
     }
 }

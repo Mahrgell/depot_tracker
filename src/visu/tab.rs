@@ -1,6 +1,8 @@
 use eframe::egui::{self, Color32, Stroke, Vec2};
 use egui_extras::{Column, TableBuilder};
 
+use crate::depot::Depot;
+
 pub enum Tab {
     Overview,
     Stocks,
@@ -8,12 +10,9 @@ pub enum Tab {
 }
 
 impl Tab {
-    pub fn show(&self, ui: &mut egui::Ui) {
+    pub fn show(&self, ui: &mut egui::Ui, depot: &Depot) {
         match self {
-            Tab::Overview => {
-                ui.label("Welcome to your stock visualizer!");
-                ()
-            }
+            Tab::Overview => super::overview::show(ui, depot),
             Tab::Stocks => show_stock_table(ui),
             Tab::Chart => show_chart(ui),
         }
