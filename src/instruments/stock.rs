@@ -1,6 +1,6 @@
 use super::{instrument_spec::InstrumentSpec, InstrumentWrapped};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Stock {
     symbol: String,
 }

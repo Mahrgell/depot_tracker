@@ -4,13 +4,13 @@ use chrono::NaiveDate;
 
 use super::{Instrument, InstrumentSpec, InstrumentWrapped, MValue};
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum OptionType {
     Put,
     Call,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct StockOption {
     name: String,
     o_type: OptionType,

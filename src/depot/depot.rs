@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use crate::instruments::{Instrument, InstrumentSpec, MValue};
+use crate::instruments::{InstrumentList, InstrumentSpec, MValue};
 
 use super::{Position, Transaction};
 
@@ -8,11 +8,11 @@ use super::{Position, Transaction};
 pub struct Depot {
     positions: Vec<Position>,
     cash: MValue,
-    _instruments: Vec<Instrument>,
+    _instruments: InstrumentList,
 }
 
 impl Depot {
-    pub fn _instruments(&self) -> &Vec<Instrument> {
+    pub fn _instruments(&self) -> &InstrumentList {
         &self._instruments
     }
 

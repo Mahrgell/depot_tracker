@@ -4,7 +4,7 @@ use crate::properties::Property;
 
 use super::{InstrumentData, InstrumentSpec, MValue, Stock, StockOption};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum InstrumentWrapped {
     Stock(Stock),
     StockOption(StockOption),
@@ -39,6 +39,12 @@ impl InstrumentWrapped {
             InstrumentWrapped::Stock(stock) => Box::new(stock),
             InstrumentWrapped::StockOption(stock_option) => Box::new(stock_option),
         }
+    }
+}
+
+impl PartialEq for Instrument {
+    fn eq(&self, other: &Self) -> bool {
+        self.instr == other.instr
     }
 }
 
