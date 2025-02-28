@@ -34,7 +34,7 @@ impl StockOption {
                 o_type,
                 s.symbol(),
                 strike,
-                expiry.format("%d.%m.%Y")
+                expiry.format("%d.%m.%y")
             );
             Self {
                 name,
