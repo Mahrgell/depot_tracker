@@ -2,12 +2,15 @@ use crate::instruments::{Instrument, InstrumentSpec, MValue};
 use chrono::{DateTime, Local};
 use std::rc::Rc;
 
+use super::TransactionLink;
+
 pub trait TransactionT {
     fn date(&self) -> DateTime<Local>;
     fn amount(&self) -> i32;
     fn instrument(&self) -> &Rc<Instrument>;
     fn price(&self) -> MValue;
     fn fees(&self) -> MValue;
+    fn as_link(self) -> TransactionLink;
 
     fn total_cost(&self) -> MValue {
         self.amount() as f32 * self.price() * self.instrument().info().factor() as f32 + self.fees()
@@ -42,7 +45,7 @@ impl Transaction {
     }
 }
 
-impl TransactionT for Transaction {
+impl TransactionT for Rc<Transaction> {
     fn date(&self) -> DateTime<Local> {
         self.date
     }
@@ -61,5 +64,9 @@ impl TransactionT for Transaction {
 
     fn fees(&self) -> MValue {
         self.fees
+    }
+
+    fn as_link(self) -> TransactionLink {
+        self.into()
     }
 }

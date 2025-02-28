@@ -61,4 +61,8 @@ impl TransactionT for TransactionLink {
             None => self.tx.fees(),
         }
     }
+
+    fn as_link(self) -> TransactionLink {
+        self
+    }
 }

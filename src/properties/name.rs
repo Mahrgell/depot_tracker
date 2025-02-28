@@ -22,7 +22,7 @@ impl Property<Position> for Name {
     }
 
     fn format_data(&self, t: &Position) -> String {
-        self.format_data(&t.instrument)
+        self.format_data(t.instrument())
     }
 }
 

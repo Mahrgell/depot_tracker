@@ -40,26 +40,25 @@ impl Depot {
         }
         txs.sort_by_key(|tx| tx.date());
         for tx in &txs {
-            self.apply_transaction(tx);
+            self.apply_transaction(tx.clone());
         }
         self.transactions.append(&mut txs);
     }
 
-    fn apply_transaction(&mut self, tx: &Transaction) {
+    fn apply_transaction(&mut self, tx: Rc<Transaction>) {
+        self.cash -= tx.total_cost();
         if let Some(i) = self
             .positions
             .iter()
-            .position(|pos| Rc::ptr_eq(&pos.instrument, &tx.instrument()))
+            .position(|pos| Rc::ptr_eq(pos.instrument(), tx.instrument()))
         {
             let pos = &mut self.positions[i];
-            if pos.amount != -tx.amount() {
-                pos.amount += tx.amount();
-            } else {
+            pos.apply_transaction(tx);
+            if pos.is_empty() {
                 self.positions.remove(i);
             }
         } else {
-            self.positions.push(Position::from_transaction(&tx));
+            self.positions.push(tx.into());
         }
-        self.cash -= tx.total_cost();
     }
 }

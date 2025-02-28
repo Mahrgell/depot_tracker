@@ -19,7 +19,7 @@ impl Property<Position> for Price {
     }
 
     fn format_data(&self, t: &Position) -> String {
-        self.format_data(&t.instrument)
+        self.format_data(t.instrument())
     }
 }
 

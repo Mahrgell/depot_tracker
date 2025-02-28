@@ -18,7 +18,7 @@ impl Property<Position> for MarketValue {
     fn format_data(&self, t: &Position) -> String {
         format!(
             "{:.2}",
-            t.amount as f32 * t.instrument.price() * t.instrument.info().factor() as f32
+            t.amount() as f32 * t.instrument().price() * t.instrument().info().factor() as f32
         )
     }
 }

@@ -16,6 +16,6 @@ impl Property<Position> for PositionSize {
     }
 
     fn format_data(&self, t: &Position) -> String {
-        t.amount.to_string()
+        t.amount().to_string()
     }
 }
