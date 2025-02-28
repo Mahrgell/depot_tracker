@@ -6,12 +6,12 @@ use csv::ReaderBuilder;
 
 use crate::instruments::{Instrument, InstrumentList, OptionType, Stock, StockOption};
 
-use super::Transaction;
+use super::{Transaction, TransactionT};
 
 #[derive(Debug, Default)]
 pub struct IbkrParser {
     pub instruments: InstrumentList,
-    pub transactions: Vec<Transaction>,
+    pub transactions: Vec<Rc<Transaction>>,
 }
 
 impl IbkrParser {
@@ -33,7 +33,7 @@ impl IbkrParser {
             self.parse_transaction(vals);
         }
 
-        self.transactions.sort_by_key(|tx| tx.date);
+        self.transactions.sort_by_key(|tx| tx.date());
 
         Ok(())
     }
@@ -45,13 +45,7 @@ impl IbkrParser {
         let price = vals[8].parse().unwrap();
         let fees = vals[11].parse().unwrap();
 
-        let tx = Transaction {
-            date,
-            amount,
-            instrument,
-            price,
-            fees,
-        };
+        let tx = Transaction::new(date, amount, instrument, price, fees);
         self.transactions.push(tx);
     }
 

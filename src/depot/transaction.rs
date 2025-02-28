@@ -1,12 +1,65 @@
-use crate::instruments::{Instrument, MValue};
+use crate::instruments::{Instrument, InstrumentSpec, MValue};
 use chrono::{DateTime, Local};
 use std::rc::Rc;
 
+pub trait TransactionT {
+    fn date(&self) -> DateTime<Local>;
+    fn amount(&self) -> i32;
+    fn instrument(&self) -> &Rc<Instrument>;
+    fn price(&self) -> MValue;
+    fn fees(&self) -> MValue;
+
+    fn total_cost(&self) -> MValue {
+        self.amount() as f32 * self.price() * self.instrument().info().factor() as f32 + self.fees()
+    }
+}
+
 #[derive(Debug)]
 pub struct Transaction {
-    pub date: DateTime<Local>,
-    pub amount: i32,
-    pub instrument: Rc<Instrument>,
-    pub price: MValue,
-    pub fees: MValue,
+    date: DateTime<Local>,
+    amount: i32,
+    instrument: Rc<Instrument>,
+    price: MValue,
+    fees: MValue,
+}
+
+impl Transaction {
+    pub fn new(
+        date: DateTime<Local>,
+        amount: i32,
+        instrument: Rc<Instrument>,
+        price: MValue,
+        fees: MValue,
+    ) -> Rc<Self> {
+        assert_ne!(amount, 0);
+        Rc::new(Transaction {
+            date,
+            amount,
+            instrument,
+            price,
+            fees,
+        })
+    }
+}
+
+impl TransactionT for Transaction {
+    fn date(&self) -> DateTime<Local> {
+        self.date
+    }
+
+    fn amount(&self) -> i32 {
+        self.amount
+    }
+
+    fn instrument(&self) -> &Rc<Instrument> {
+        &self.instrument
+    }
+
+    fn price(&self) -> MValue {
+        self.price
+    }
+
+    fn fees(&self) -> MValue {
+        self.fees
+    }
 }

@@ -1,0 +1,64 @@
+use std::rc::Rc;
+
+use chrono::{DateTime, Local};
+
+use crate::instruments::{Instrument, MValue};
+
+use super::{Transaction, TransactionT};
+
+#[derive(Debug)]
+pub struct TransactionLink {
+    tx: Rc<Transaction>,
+    partial: Option<i32>,
+}
+
+impl TransactionLink {
+    pub fn split(&self, amount: i32) -> (TransactionLink, TransactionLink) {
+        let old_a = self.amount();
+        assert!((old_a > amount && amount > 0) || (old_a < amount && amount < 0));
+        (
+            TransactionLink {
+                tx: self.tx.clone(),
+                partial: Some(amount),
+            },
+            TransactionLink {
+                tx: self.tx.clone(),
+                partial: Some(old_a - amount),
+            },
+        )
+    }
+}
+
+impl From<Rc<Transaction>> for TransactionLink {
+    fn from(tx: Rc<Transaction>) -> Self {
+        TransactionLink { tx, partial: None }
+    }
+}
+
+impl TransactionT for TransactionLink {
+    fn date(&self) -> DateTime<Local> {
+        self.tx.date()
+    }
+
+    fn amount(&self) -> i32 {
+        match self.partial {
+            Some(p) => p,
+            None => self.tx.amount(),
+        }
+    }
+
+    fn instrument(&self) -> &Rc<Instrument> {
+        &self.tx.instrument()
+    }
+
+    fn price(&self) -> MValue {
+        self.tx.price()
+    }
+
+    fn fees(&self) -> MValue {
+        match self.partial {
+            Some(p) => p as f32 / self.tx.amount() as f32 * self.tx.fees(),
+            None => self.tx.fees(),
+        }
+    }
+}

@@ -1,8 +1,8 @@
 use std::rc::Rc;
 
-use crate::instruments::{InstrumentList, InstrumentSpec, MValue};
+use crate::instruments::{InstrumentList, MValue};
 
-use super::{Position, Transaction};
+use super::{Position, Transaction, TransactionT};
 
 #[derive(Debug, Default)]
 pub struct Depot {
@@ -29,17 +29,17 @@ impl Depot {
         if let Some(i) = self
             .positions
             .iter()
-            .position(|pos| Rc::ptr_eq(&pos.instrument, &tx.instrument))
+            .position(|pos| Rc::ptr_eq(&pos.instrument, &tx.instrument()))
         {
             let pos = &mut self.positions[i];
-            if pos.amount != -tx.amount {
-                pos.amount += tx.amount;
+            if pos.amount != -tx.amount() {
+                pos.amount += tx.amount();
             } else {
                 self.positions.remove(i);
             }
         } else {
             self.positions.push(Position::from_transaction(&tx));
         }
-        self.cash -= tx.amount as f32 * tx.price * tx.instrument.info().factor() as f32 + tx.fees;
+        self.cash -= tx.total_cost();
     }
 }
