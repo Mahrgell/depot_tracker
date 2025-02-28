@@ -20,7 +20,7 @@ impl Depot {
         &self.positions
     }
 
-    pub fn deposit(&mut self, amount: MValue) {
+    pub fn _deposit(&mut self, amount: MValue) {
         assert!(amount > 0.);
         self.cash += amount;
     }

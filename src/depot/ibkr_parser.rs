@@ -1,10 +1,7 @@
-use std::{
-    io,
-    path::Path,
-    rc::Rc,
-};
+use std::{io, path::Path, rc::Rc};
 
-use chrono::NaiveDate;
+use chrono::{DateTime, Local, NaiveDate, NaiveDateTime, TimeZone};
+use chrono_tz::America::New_York;
 use csv::ReaderBuilder;
 
 use crate::instruments::{Instrument, InstrumentList, OptionType, Stock, StockOption};
@@ -22,8 +19,7 @@ impl IbkrParser {
         let mut reader = ReaderBuilder::new()
             .has_headers(false)
             .flexible(true)
-            .from_path(path)
-            .unwrap();
+            .from_path(path)?;
 
         for result in reader.records() {
             let result = result?;
@@ -37,16 +33,20 @@ impl IbkrParser {
             self.parse_transaction(vals);
         }
 
+        self.transactions.sort_by_key(|tx| tx.date);
+
         Ok(())
     }
 
     fn parse_transaction(&mut self, vals: Vec<&str>) {
+        let date = parse_date_time(vals[6]);
         let instrument = self.parse_instrument(vals[3], vals[5]);
         let amount = vals[7].parse().unwrap();
         let price = vals[8].parse().unwrap();
         let fees = vals[11].parse().unwrap();
 
         let tx = Transaction {
+            date,
             amount,
             instrument,
             price,
@@ -78,4 +78,17 @@ impl IbkrParser {
         let expiry = NaiveDate::parse_from_str(parts[1], "%d%b%y").unwrap();
         StockOption::new(o_type, underlying, strike, 100, expiry)
     }
+}
+
+fn parse_date_time(dt: &str) -> DateTime<Local> {
+    static FORMAT: &str = "%Y-%m-%d, %H:%M:%S";
+
+    let naive_dt = NaiveDateTime::parse_from_str(dt, FORMAT).expect("Failed to parse datetime");
+
+    let eastern_dt = New_York
+        .from_local_datetime(&naive_dt)
+        .single()
+        .expect("Ambiguous or invalid datetime");
+
+    eastern_dt.with_timezone(&Local)
 }
