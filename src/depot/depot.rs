@@ -1,8 +1,8 @@
 use std::rc::Rc;
 
-use crate::instruments::{InstrumentList, MValue};
+use crate::instruments::{InstrumentList, InstrumentSpec, MValue};
 
-use super::{Position, Transaction, TransactionT};
+use super::{Position, Trade, Transaction, TransactionT};
 
 #[derive(Debug, Default)]
 pub struct Depot {
@@ -10,6 +10,7 @@ pub struct Depot {
     cash: MValue,
     _instruments: InstrumentList,
     transactions: Vec<Rc<Transaction>>,
+    trades: Vec<Trade>,
 }
 
 impl Depot {
@@ -37,6 +38,7 @@ impl Depot {
             .map_or(false, |last_tx| last_tx.date() > first_new_tx)
         {
             txs.append(&mut self.transactions);
+            self.trades.clear();
         }
         txs.sort_by_key(|tx| tx.date());
         for tx in &txs {
@@ -53,7 +55,14 @@ impl Depot {
             .position(|pos| Rc::ptr_eq(pos.instrument(), tx.instrument()))
         {
             let pos = &mut self.positions[i];
-            pos.apply_transaction(tx);
+            if let Some(trade) = pos.apply_transaction(tx) {
+                println!(
+                    "Trade for {} -> Profit: {}",
+                    trade.instrument().info().name(),
+                    trade.profit()
+                );
+                self.trades.push(trade);
+            }
             if pos.is_empty() {
                 self.positions.remove(i);
             }
