@@ -9,6 +9,7 @@ pub struct Depot {
     positions: Vec<Position>,
     cash: MValue,
     _instruments: InstrumentList,
+    transactions: Vec<Rc<Transaction>>,
 }
 
 impl Depot {
@@ -25,7 +26,26 @@ impl Depot {
         self.cash += amount;
     }
 
-    pub fn apply_transaction(&mut self, tx: &Transaction) {
+    pub fn add_transactions(&mut self, mut txs: Vec<Rc<Transaction>>) {
+        if txs.is_empty() {
+            return;
+        }
+        let first_new_tx = txs.iter().map(|tx| tx.date()).min().unwrap();
+        if self
+            .transactions
+            .last()
+            .map_or(false, |last_tx| last_tx.date() > first_new_tx)
+        {
+            txs.append(&mut self.transactions);
+        }
+        txs.sort_by_key(|tx| tx.date());
+        for tx in &txs {
+            self.apply_transaction(tx);
+        }
+        self.transactions.append(&mut txs);
+    }
+
+    fn apply_transaction(&mut self, tx: &Transaction) {
         if let Some(i) = self
             .positions
             .iter()

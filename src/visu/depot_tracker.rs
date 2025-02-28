@@ -16,9 +16,7 @@ impl DepotTracker {
         let mut parser = IbkrParser::default();
         parser.parse("dummy.csv").unwrap();
 
-        for tx in parser.transactions {
-            depot.apply_transaction(&tx);
-        }
+        depot.add_transactions(parser.transactions);
 
         Self {
             depot,

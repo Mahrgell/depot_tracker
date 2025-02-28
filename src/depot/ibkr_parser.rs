@@ -6,7 +6,7 @@ use csv::ReaderBuilder;
 
 use crate::instruments::{Instrument, InstrumentList, OptionType, Stock, StockOption};
 
-use super::{Transaction, TransactionT};
+use super::Transaction;
 
 #[derive(Debug, Default)]
 pub struct IbkrParser {
@@ -32,8 +32,6 @@ impl IbkrParser {
             }
             self.parse_transaction(vals);
         }
-
-        self.transactions.sort_by_key(|tx| tx.date());
 
         Ok(())
     }
