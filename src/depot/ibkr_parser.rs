@@ -41,7 +41,7 @@ impl IbkrParser {
         let instrument = self.parse_instrument(vals[3], vals[5]);
         let amount = vals[7].parse().unwrap();
         let price = vals[8].parse().unwrap();
-        let fees = vals[11].parse().unwrap();
+        let fees = -vals[11].parse::<f32>().unwrap();
 
         let tx = Transaction::new(date, amount, instrument, price, fees);
         self.transactions.push(tx);
