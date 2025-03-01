@@ -1,9 +1,9 @@
 use super::{FormattedProperty, Property, PropertyValue};
 
 #[derive(Default)]
-pub struct Name {}
+pub struct InstrumentName {}
 
-impl Name {
+impl InstrumentName {
     pub fn fmt<T>() -> Box<dyn FormattedProperty<T>>
     where
         Self: FormattedProperty<T>,
@@ -12,13 +12,13 @@ impl Name {
     }
 }
 
-impl PropertyValue for Name {
+impl PropertyValue for InstrumentName {
     type Value = String;
 }
 
-impl<T> FormattedProperty<T> for Name
+impl<T> FormattedProperty<T> for InstrumentName
 where
-    T: Property<Name>,
+    T: Property<InstrumentName>,
 {
     fn header(&self) -> String {
         "Instrument".into()

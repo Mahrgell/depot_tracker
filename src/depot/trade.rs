@@ -4,7 +4,7 @@ use chrono::NaiveDate;
 
 use crate::{
     depot::TransactionT,
-    instruments::{Instrument, MValue},
+    instruments::{HasInstrument, Instrument, MValue},
     properties::{CloseDate, OpenDate, Property},
 };
 
@@ -24,15 +24,17 @@ impl Trade {
         Trade { open_txs, close_tx }
     }
 
-    pub fn instrument(&self) -> &Rc<Instrument> {
-        self.close_tx.instrument()
-    }
-
     pub fn profit(&self) -> MValue {
         -self
             .open_txs
             .iter()
             .fold(self.close_tx.total_cost(), |a, tx| a + tx.total_cost())
+    }
+}
+
+impl HasInstrument for Trade {
+    fn instrument(&self) -> &Rc<Instrument> {
+        &self.close_tx.instrument()
     }
 }
 

@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use crate::instruments::{InstrumentList, InstrumentSpec, MValue};
+use crate::instruments::{HasInstrument, InstrumentList, InstrumentSpec, MValue};
 
 use super::{Position, Trade, Transaction, TransactionT};
 

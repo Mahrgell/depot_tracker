@@ -3,8 +3,8 @@ use std::{cmp::Ordering, rc::Rc};
 use chrono::NaiveDate;
 
 use crate::{
-    instruments::{Instrument, InstrumentSpec, MValue},
-    properties::{MarketValue, Name, OpenDate, PositionSize, Price, Property},
+    instruments::{HasInstrument, Instrument, InstrumentSpec, MValue},
+    properties::{MarketValue, OpenDate, PositionSize, Price, Property},
 };
 
 use super::{Trade, TransactionLink, TransactionT};
@@ -19,10 +19,6 @@ pub struct Position {
 impl Position {
     pub fn amount(&self) -> i32 {
         self.amount
-    }
-
-    pub fn instrument(&self) -> &Rc<Instrument> {
-        &self.instrument
     }
 
     pub fn is_empty(&self) -> bool {
@@ -77,6 +73,12 @@ impl<T: TransactionT> From<T> for Position {
     }
 }
 
+impl HasInstrument for Position {
+    fn instrument(&self) -> &Rc<Instrument> {
+        &self.instrument
+    }
+}
+
 impl Property<PositionSize> for Position {
     fn get(&self, _: &PositionSize) -> i32 {
         self.amount()
@@ -86,12 +88,6 @@ impl Property<PositionSize> for Position {
 impl Property<Price> for Position {
     fn get(&self, p: &Price) -> MValue {
         self.instrument.get(p)
-    }
-}
-
-impl Property<Name> for Position {
-    fn get(&self, n: &Name) -> String {
-        self.instrument.get(n)
     }
 }
 

@@ -1,6 +1,6 @@
 use std::{rc::Rc, sync::RwLock};
 
-use crate::properties::{FormattedProperty, Name, Price, Property};
+use crate::properties::{FormattedProperty, InstrumentName, Price, Property};
 
 use super::{InstrumentData, InstrumentSpec, MValue, Stock, StockOption};
 
@@ -82,8 +82,8 @@ impl Property<Price> for Instrument {
     }
 }
 
-impl Property<Name> for Instrument {
-    fn get(&self, _: &Name) -> String {
+impl Property<InstrumentName> for Instrument {
+    fn get(&self, _: &InstrumentName) -> String {
         self.info().name().into()
     }
 }

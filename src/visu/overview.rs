@@ -2,14 +2,14 @@ use eframe::egui;
 
 use crate::{
     depot::Depot,
-    properties::{MarketValue, Name, PositionSize, Price},
+    properties::{InstrumentName, MarketValue, PositionSize, Price},
 };
 
 use super::build_table;
 
 pub fn show(ui: &mut egui::Ui, depot: &Depot) {
     let props = vec![
-        Name::fmt(),
+        InstrumentName::fmt(),
         PositionSize::fmt(),
         Price::fmt(),
         MarketValue::fmt(),

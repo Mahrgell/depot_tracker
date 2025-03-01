@@ -2,7 +2,7 @@ use std::rc::Rc;
 
 use chrono::{DateTime, Local};
 
-use crate::instruments::{Instrument, MValue};
+use crate::instruments::{HasInstrument, Instrument, MValue};
 
 use super::{Transaction, TransactionT};
 
@@ -35,6 +35,12 @@ impl From<Rc<Transaction>> for TransactionLink {
     }
 }
 
+impl HasInstrument for TransactionLink {
+    fn instrument(&self) -> &Rc<Instrument> {
+        &self.tx.instrument()
+    }
+}
+
 impl TransactionT for TransactionLink {
     fn date(&self) -> DateTime<Local> {
         self.tx.date()
@@ -45,10 +51,6 @@ impl TransactionT for TransactionLink {
             Some(p) => p,
             None => self.tx.amount(),
         }
-    }
-
-    fn instrument(&self) -> &Rc<Instrument> {
-        &self.tx.instrument()
     }
 
     fn price(&self) -> MValue {
