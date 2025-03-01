@@ -1,8 +1,10 @@
 use std::{cmp::Ordering, rc::Rc};
 
+use chrono::NaiveDate;
+
 use crate::{
     instruments::{Instrument, InstrumentSpec, MValue},
-    properties::{MarketValue, Name, PositionSize, Price, Property},
+    properties::{MarketValue, Name, OpenDate, PositionSize, Price, Property},
 };
 
 use super::{Trade, TransactionLink, TransactionT};
@@ -96,5 +98,14 @@ impl Property<Name> for Position {
 impl Property<MarketValue> for Position {
     fn get(&self, _: &MarketValue) -> MValue {
         self.amount() as f32 * self.instrument().price() * self.instrument().info().factor() as f32
+    }
+}
+
+impl Property<OpenDate> for Position {
+    fn get(&self, _: &OpenDate) -> (NaiveDate, Option<NaiveDate>) {
+        let t1 = self.txs.first().unwrap().date().date_naive();
+        let t2 = self.txs.last().unwrap().date().date_naive();
+        let t2 = if t1 == t2 { None } else { Some(t2) };
+        (t1, t2)
     }
 }

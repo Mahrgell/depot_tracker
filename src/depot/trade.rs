@@ -1,8 +1,11 @@
 use std::rc::Rc;
 
+use chrono::NaiveDate;
+
 use crate::{
     depot::TransactionT,
     instruments::{Instrument, MValue},
+    properties::{CloseDate, OpenDate, Property},
 };
 
 use super::TransactionLink;
@@ -30,5 +33,20 @@ impl Trade {
             .open_txs
             .iter()
             .fold(self.close_tx.total_cost(), |a, tx| a + tx.total_cost())
+    }
+}
+
+impl Property<OpenDate> for Trade {
+    fn get(&self, _: &OpenDate) -> (NaiveDate, Option<NaiveDate>) {
+        let t1 = self.open_txs.first().unwrap().date().date_naive();
+        let t2 = self.open_txs.last().unwrap().date().date_naive();
+        let t2 = if t1 == t2 { None } else { Some(t2) };
+        (t1, t2)
+    }
+}
+
+impl Property<CloseDate> for Trade {
+    fn get(&self, _: &CloseDate) -> NaiveDate {
+        self.close_tx.date().date_naive()
     }
 }
