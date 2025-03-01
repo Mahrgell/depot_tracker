@@ -17,7 +17,7 @@ impl Trade {
     pub fn new(open_txs: Vec<TransactionLink>, close_tx: TransactionLink) -> Self {
         assert!(open_txs
             .iter()
-            .all(|tx| Rc::ptr_eq(tx.instrument(), close_tx.instrument())));
+            .all(|tx| close_tx.instrument().eq(tx.instrument())));
         Trade { open_txs, close_tx }
     }
 

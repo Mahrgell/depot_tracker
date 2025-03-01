@@ -24,6 +24,10 @@ impl Instrument {
         })
     }
 
+    pub fn eq(self: &Rc<Self>, other: &Rc<Self>) -> bool {
+        Rc::ptr_eq(self, other)
+    }
+
     pub fn info(&self) -> &InstrumentWrapped {
         &self.instr
     }

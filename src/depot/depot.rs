@@ -52,7 +52,7 @@ impl Depot {
         if let Some(i) = self
             .positions
             .iter()
-            .position(|pos| Rc::ptr_eq(pos.instrument(), tx.instrument()))
+            .position(|pos| pos.instrument().eq(tx.instrument()))
         {
             let pos = &mut self.positions[i];
             if let Some(trade) = pos.apply_transaction(tx) {

@@ -25,7 +25,7 @@ impl Position {
     }
 
     pub fn apply_transaction<T: TransactionT>(&mut self, tx: T) -> Option<Trade> {
-        assert!(Rc::ptr_eq(&self.instrument, &tx.instrument()));
+        assert!(self.instrument.eq(tx.instrument()));
         let tx_a = tx.amount();
         let trade = if tx_a * self.amount < 0 {
             let (open_txs, close_tx) = match tx_a.abs().cmp(&self.amount.abs()) {
