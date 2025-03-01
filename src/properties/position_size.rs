@@ -1,21 +1,30 @@
-use crate::depot::Position;
+use super::{FormattedProperty, Property, PropertyValue};
 
-use super::Property;
-
+#[derive(Default)]
 pub struct PositionSize {}
 
 impl PositionSize {
-    pub fn new() -> Box<dyn Property<Position>> {
+    pub fn fmt<T>() -> Box<dyn FormattedProperty<T>>
+    where
+        Self: FormattedProperty<T>,
+    {
         Box::new(Self {})
     }
 }
 
-impl Property<Position> for PositionSize {
+impl PropertyValue for PositionSize {
+    type Value = i32;
+}
+
+impl<T> FormattedProperty<T> for PositionSize
+where
+    T: Property<PositionSize>,
+{
     fn header(&self) -> String {
         "Position".into()
     }
 
-    fn format_data(&self, t: &Position) -> String {
-        t.amount().to_string()
+    fn format_data(&self, t: &T) -> String {
+        t.get(&self).to_string()
     }
 }

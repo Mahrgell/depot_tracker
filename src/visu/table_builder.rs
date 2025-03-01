@@ -1,9 +1,9 @@
 use eframe::egui;
 use egui_extras::{Column, TableBuilder};
 
-use crate::properties::Property;
+use crate::properties::FormattedProperty;
 
-pub fn build_table<T>(ui: &mut egui::Ui, data: &Vec<T>, props: Vec<Box<dyn Property<T>>>) {
+pub fn build_table<T>(ui: &mut egui::Ui, data: &Vec<T>, props: Vec<Box<dyn FormattedProperty<T>>>) {
     TableBuilder::new(ui)
         .striped(true)
         .columns(Column::auto(), props.len())

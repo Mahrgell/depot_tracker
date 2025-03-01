@@ -1,37 +1,30 @@
-use crate::{
-    depot::Position,
-    instruments::{Instrument, InstrumentSpec},
-};
+use super::{FormattedProperty, Property, PropertyValue};
 
-use super::Property;
-
+#[derive(Default)]
 pub struct Name {}
 
 impl Name {
-    pub fn new<T>() -> Box<dyn Property<T>>
+    pub fn fmt<T>() -> Box<dyn FormattedProperty<T>>
     where
-        Self: Property<T>,
+        Self: FormattedProperty<T>,
     {
         Box::new(Self {})
     }
 }
 
-impl Property<Position> for Name {
-    fn header(&self) -> String {
-        "Instrument".into()
-    }
-
-    fn format_data(&self, t: &Position) -> String {
-        self.format_data(t.instrument())
-    }
+impl PropertyValue for Name {
+    type Value = String;
 }
 
-impl Property<Instrument> for Name {
+impl<T> FormattedProperty<T> for Name
+where
+    T: Property<Name>,
+{
     fn header(&self) -> String {
         "Instrument".into()
     }
 
-    fn format_data(&self, t: &Instrument) -> String {
-        t.info().name().into()
+    fn format_data(&self, t: &T) -> String {
+        t.get(&self)
     }
 }

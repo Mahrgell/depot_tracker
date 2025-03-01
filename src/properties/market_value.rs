@@ -1,24 +1,32 @@
-use crate::{depot::Position, instruments::InstrumentSpec};
+use crate::instruments::MValue;
 
-use super::Property;
+use super::{FormattedProperty, Property, PropertyValue};
 
+#[derive(Default)]
 pub struct MarketValue {}
 
 impl MarketValue {
-    pub fn new() -> Box<dyn Property<Position>> {
+    pub fn fmt<T>() -> Box<dyn FormattedProperty<T>>
+    where
+        Self: FormattedProperty<T>,
+    {
         Box::new(Self {})
     }
 }
 
-impl Property<Position> for MarketValue {
+impl PropertyValue for MarketValue {
+    type Value = MValue;
+}
+
+impl<T> FormattedProperty<T> for MarketValue
+where
+    T: Property<MarketValue>,
+{
     fn header(&self) -> String {
-        "Market value".into()
+        "Market Value".into()
     }
 
-    fn format_data(&self, t: &Position) -> String {
-        format!(
-            "{:.2}",
-            t.amount() as f32 * t.instrument().price() * t.instrument().info().factor() as f32
-        )
+    fn format_data(&self, t: &T) -> String {
+        format!("{:.2}", t.get(&self))
     }
 }

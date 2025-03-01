@@ -1,6 +1,6 @@
 use std::{rc::Rc, sync::RwLock};
 
-use crate::properties::Property;
+use crate::properties::{FormattedProperty, Name, Price, Property};
 
 use super::{InstrumentData, InstrumentSpec, MValue, Stock, StockOption};
 
@@ -66,12 +66,24 @@ impl InstrumentSpec for InstrumentWrapped {
     }
 }
 
-impl<T: Property<Instrument>> Property<Rc<Instrument>> for T {
+impl<T: FormattedProperty<Instrument>> FormattedProperty<Rc<Instrument>> for T {
     fn header(&self) -> String {
-        <T as Property<Instrument>>::header(self)
+        <T as FormattedProperty<Instrument>>::header(self)
     }
 
     fn format_data(&self, t: &Rc<Instrument>) -> String {
         self.format_data(t.as_ref())
+    }
+}
+
+impl Property<Price> for Instrument {
+    fn get(&self, _: &Price) -> MValue {
+        self.price()
+    }
+}
+
+impl Property<Name> for Instrument {
+    fn get(&self, _: &Name) -> String {
+        self.info().name().into()
     }
 }

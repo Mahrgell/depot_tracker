@@ -1,9 +1,11 @@
+pub mod formatted_property;
 pub mod market_value;
 pub mod name;
 pub mod position_size;
 pub mod price;
 pub mod property;
 
+pub use formatted_property::*;
 pub use market_value::*;
 pub use name::*;
 pub use position_size::*;

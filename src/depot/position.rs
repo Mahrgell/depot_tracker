@@ -1,6 +1,9 @@
 use std::{cmp::Ordering, rc::Rc};
 
-use crate::instruments::Instrument;
+use crate::{
+    instruments::{Instrument, InstrumentSpec, MValue},
+    properties::{MarketValue, Name, PositionSize, Price, Property},
+};
 
 use super::{Trade, TransactionLink, TransactionT};
 
@@ -69,5 +72,29 @@ impl<T: TransactionT> From<T> for Position {
             instrument: tx.instrument().clone(),
             txs: vec![tx.as_link()],
         }
+    }
+}
+
+impl Property<PositionSize> for Position {
+    fn get(&self, _: &PositionSize) -> i32 {
+        self.amount()
+    }
+}
+
+impl Property<Price> for Position {
+    fn get(&self, p: &Price) -> MValue {
+        self.instrument.get(p)
+    }
+}
+
+impl Property<Name> for Position {
+    fn get(&self, n: &Name) -> String {
+        self.instrument.get(n)
+    }
+}
+
+impl Property<MarketValue> for Position {
+    fn get(&self, _: &MarketValue) -> MValue {
+        self.amount() as f32 * self.instrument().price() * self.instrument().info().factor() as f32
     }
 }

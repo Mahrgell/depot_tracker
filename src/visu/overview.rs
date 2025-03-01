@@ -9,10 +9,10 @@ use super::build_table;
 
 pub fn show(ui: &mut egui::Ui, depot: &Depot) {
     let props = vec![
-        Name::new(),
-        PositionSize::new(),
-        Price::new(),
-        MarketValue::new(),
+        Name::fmt(),
+        PositionSize::fmt(),
+        Price::fmt(),
+        MarketValue::fmt(),
     ];
     build_table(ui, depot.positions(), props);
 }
