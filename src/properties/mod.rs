@@ -5,6 +5,7 @@ pub mod name;
 pub mod open_date;
 pub mod position_size;
 pub mod price;
+pub mod profit;
 pub mod property;
 
 pub use close_date::*;
@@ -14,4 +15,5 @@ pub use name::*;
 pub use open_date::*;
 pub use position_size::*;
 pub use price::*;
+pub use profit::*;
 pub use property::*;

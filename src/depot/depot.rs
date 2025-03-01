@@ -22,6 +22,10 @@ impl Depot {
         &self.positions
     }
 
+    pub fn trades(&self) -> &Vec<Trade> {
+        &self.trades
+    }
+
     pub fn _deposit(&mut self, amount: MValue) {
         assert!(amount > 0.);
         self.cash += amount;
