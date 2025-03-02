@@ -3,9 +3,8 @@ use eframe::egui;
 use crate::{
     depot::Depot,
     properties::{InstrumentName, MarketValue, PositionSize, Price},
+    visu::build_table,
 };
-
-use super::build_table;
 
 pub fn show(ui: &mut egui::Ui, depot: &Depot) {
     let props = vec![

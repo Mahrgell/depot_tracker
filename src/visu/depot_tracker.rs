@@ -2,7 +2,7 @@ use eframe::egui::{CentralPanel, Context, SidePanel};
 
 use crate::depot::{Depot, IbkrParser};
 
-use super::Tab;
+use super::tabs::Tab;
 
 pub struct DepotTracker {
     depot: Depot,
