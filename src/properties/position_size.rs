@@ -1,3 +1,5 @@
+use eframe::egui;
+
 use super::{FormattedProperty, Property, PropertyValue};
 
 #[derive(Default)]
@@ -26,5 +28,9 @@ where
 
     fn format_data(&self, t: &T) -> String {
         t.get(&self).to_string()
+    }
+
+    fn layout(&self) -> egui::Layout {
+        egui::Layout::right_to_left(egui::Align::Center)
     }
 }

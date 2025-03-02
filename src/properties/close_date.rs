@@ -23,10 +23,15 @@ where
     T: Property<CloseDate>,
 {
     fn header(&self) -> String {
-        "Open Date".into()
+        "Close Date".into()
     }
 
     fn format_data(&self, t: &T) -> String {
         t.get(&self).format("%d.%m.%y").to_string()
     }
+
+    // fn long_data_example(&self) -> String {
+    //     static DATE: NaiveDate = NaiveDate::from_ymd_opt(2222, 12, 22).unwrap();
+    //     format!("{}", DATE.format("%d.%m.%y"))
+    // }
 }

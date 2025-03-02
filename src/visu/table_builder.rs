@@ -10,9 +10,26 @@ pub fn build_table<'a, T: 'a, I>(
 ) where
     I: IntoIterator<Item = &'a T>,
 {
-    TableBuilder::new(ui)
-        .striped(true)
-        .columns(Column::auto(), props.len())
+    let font_id = egui::TextStyle::Body.resolve(ui.style());
+
+    let column_widths: Vec<f32> = props
+        .iter()
+        .map(|p| {
+            ui.fonts(|f| {
+                f.layout_no_wrap(p.long_data_example(), font_id.clone(), egui::Color32::WHITE)
+            })
+            .size()
+            .x + 10.0
+        })
+        .collect();
+
+    let mut table = TableBuilder::new(ui).striped(true);
+
+    for &width in &column_widths {
+        table = table.column(Column::initial(width).at_least(50.0));
+    }
+
+    table
         .header(20.0, |mut header| {
             for p in &props {
                 header.col(|ui| {
@@ -21,12 +38,13 @@ pub fn build_table<'a, T: 'a, I>(
             }
         })
         .body(|mut body| {
-            let mut itr = data.into_iter();
-            while let Some(d) = itr.next() {
+            for d in data.into_iter() {
                 body.row(18.0, |mut row| {
                     for p in &props {
                         row.col(|ui| {
-                            ui.label(p.format_data(&d));
+                            ui.with_layout(p.layout(), |ui| {
+                                ui.label(p.format_data(d));
+                            });
                         });
                     }
                 });

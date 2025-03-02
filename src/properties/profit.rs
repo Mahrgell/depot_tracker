@@ -1,3 +1,5 @@
+use eframe::egui;
+
 use crate::instruments::MValue;
 
 use super::{FormattedProperty, Property, PropertyValue};
@@ -28,5 +30,13 @@ where
 
     fn format_data(&self, t: &T) -> String {
         format!("{:.2}", t.get(&self))
+    }
+
+    fn long_data_example(&self) -> String {
+        format!("{:.2}", -99999.99)
+    }
+
+    fn layout(&self) -> egui::Layout {
+        egui::Layout::right_to_left(egui::Align::Center)
     }
 }

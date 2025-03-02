@@ -27,4 +27,9 @@ where
     fn format_data(&self, t: &T) -> String {
         t.get(&self)
     }
+
+    fn long_data_example(&self) -> String {
+        static EXAMPLE: &str = "Call XXXXX - 22.12.2222";
+        EXAMPLE.into()
+    }
 }

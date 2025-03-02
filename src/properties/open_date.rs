@@ -33,4 +33,9 @@ where
             None => t1.format("%d.%m.%y").to_string(),
         }
     }
+
+    fn long_data_example(&self) -> String {
+        static DATE: NaiveDate = NaiveDate::from_ymd_opt(2222, 12, 22).unwrap();
+        format!("{} -", DATE.format("%d.%m.%y")) // line break if 2 dates!
+    }
 }
