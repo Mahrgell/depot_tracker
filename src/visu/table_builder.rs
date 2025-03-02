@@ -49,6 +49,13 @@ pub fn build_table<'a, T: 'a, I>(
                     }
                 });
             }
+            body.row(3.0, |mut row| {
+                for _ in &props {
+                    row.col(|ui| {
+                        ui.separator();
+                    });
+                }
+            });
             body.row(18.0, |mut row| {
                 for p in &mut props {
                     row.col(|ui| {
