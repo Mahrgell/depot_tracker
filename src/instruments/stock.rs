@@ -29,6 +29,6 @@ impl InstrumentSpec for Stock {
     }
 
     fn matches_symbol(&self, symbol: &str, _include_underlying: bool) -> bool {
-        self.symbol == symbol
+        self.symbol.contains(symbol)
     }
 }
