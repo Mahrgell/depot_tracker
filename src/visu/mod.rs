@@ -1,4 +1,5 @@
 pub mod depot_tracker;
+mod filters;
 mod table_builder;
 mod tabs;
 

@@ -32,7 +32,7 @@ impl eframe::App for DepotTracker {
                 self.active_tab = Tab::Overview;
             }
             if ui.button("Trades").clicked() {
-                self.active_tab = Tab::Trades(Trades::new());
+                self.active_tab = Tab::Trades(Trades::default());
             }
             if ui.button("Chart").clicked() {
                 self.active_tab = Tab::Chart;
