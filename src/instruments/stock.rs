@@ -27,4 +27,8 @@ impl InstrumentSpec for Stock {
     fn factor(&self) -> u32 {
         1
     }
+
+    fn matches_symbol(&self, symbol: &str, _include_underlying: bool) -> bool {
+        self.symbol == symbol
+    }
 }

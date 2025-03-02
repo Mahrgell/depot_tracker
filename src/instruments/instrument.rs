@@ -64,6 +64,10 @@ impl InstrumentSpec for InstrumentWrapped {
     fn factor(&self) -> u32 {
         self.to_spec().factor()
     }
+
+    fn matches_symbol(&self, symbol: &str, include_underlying: bool) -> bool {
+        self.to_spec().matches_symbol(symbol, include_underlying)
+    }
 }
 
 impl<T: FormattedProperty<Instrument>> FormattedProperty<Rc<Instrument>> for T {

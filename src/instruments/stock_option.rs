@@ -62,4 +62,12 @@ impl InstrumentSpec for StockOption {
     fn factor(&self) -> u32 {
         self.factor
     }
+
+    fn matches_symbol(&self, symbol: &str, include_underlying: bool) -> bool {
+        include_underlying
+            && self
+                .underlying
+                .info()
+                .matches_symbol(symbol, include_underlying)
+    }
 }
