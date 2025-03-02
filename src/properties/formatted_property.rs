@@ -2,7 +2,10 @@ use eframe::egui;
 
 pub trait FormattedProperty<Target> {
     fn header(&self) -> String;
-    fn format_data(&self, t: &Target) -> String;
+    fn format_data(&mut self, t: &Target) -> String;
+    fn accumulated(&self) -> String {
+        "".into()
+    }
     fn long_data_example(&self) -> String {
         self.header()
     }

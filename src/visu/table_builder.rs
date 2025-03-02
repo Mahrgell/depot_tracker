@@ -6,7 +6,7 @@ use crate::properties::FormattedProperty;
 pub fn build_table<'a, T: 'a, I>(
     ui: &mut egui::Ui,
     data: I,
-    props: Vec<Box<dyn FormattedProperty<T>>>,
+    mut props: Vec<Box<dyn FormattedProperty<T>>>,
 ) where
     I: IntoIterator<Item = &'a T>,
 {
@@ -40,7 +40,7 @@ pub fn build_table<'a, T: 'a, I>(
         .body(|mut body| {
             for d in data.into_iter() {
                 body.row(18.0, |mut row| {
-                    for p in &props {
+                    for p in &mut props {
                         row.col(|ui| {
                             ui.with_layout(p.layout(), |ui| {
                                 ui.label(p.format_data(d));
@@ -49,5 +49,14 @@ pub fn build_table<'a, T: 'a, I>(
                     }
                 });
             }
+            body.row(18.0, |mut row| {
+                for p in &mut props {
+                    row.col(|ui| {
+                        ui.with_layout(p.layout(), |ui| {
+                            ui.label(p.accumulated());
+                        });
+                    });
+                }
+            });
         });
 }

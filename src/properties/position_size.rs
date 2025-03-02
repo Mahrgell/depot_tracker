@@ -26,7 +26,7 @@ where
         "Position".into()
     }
 
-    fn format_data(&self, t: &T) -> String {
+    fn format_data(&mut self, t: &T) -> String {
         t.get(&self).to_string()
     }
 

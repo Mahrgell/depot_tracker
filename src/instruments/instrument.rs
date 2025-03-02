@@ -75,7 +75,7 @@ impl<T: FormattedProperty<Instrument>> FormattedProperty<Rc<Instrument>> for T {
         <T as FormattedProperty<Instrument>>::header(self)
     }
 
-    fn format_data(&self, t: &Rc<Instrument>) -> String {
+    fn format_data(&mut self, t: &Rc<Instrument>) -> String {
         self.format_data(t.as_ref())
     }
 }

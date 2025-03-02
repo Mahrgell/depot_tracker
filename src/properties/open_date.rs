@@ -26,7 +26,7 @@ where
         "Open Date".into()
     }
 
-    fn format_data(&self, t: &T) -> String {
+    fn format_data(&mut self, t: &T) -> String {
         let (t1, t2) = t.get(&self);
         match t2 {
             Some(t2) => format!("{} - {}", t1.format("%d.%m.%y"), t2.format("%d.%m.%y")),

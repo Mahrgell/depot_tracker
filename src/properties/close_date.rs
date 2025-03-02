@@ -26,7 +26,7 @@ where
         "Close Date".into()
     }
 
-    fn format_data(&self, t: &T) -> String {
+    fn format_data(&mut self, t: &T) -> String {
         t.get(&self).format("%d.%m.%y").to_string()
     }
 

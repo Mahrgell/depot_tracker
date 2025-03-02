@@ -28,7 +28,7 @@ where
         "Price".into()
     }
 
-    fn format_data(&self, t: &T) -> String {
+    fn format_data(&mut self, t: &T) -> String {
         format!("{:.2}", t.get(&self))
     }
 
