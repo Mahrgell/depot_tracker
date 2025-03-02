@@ -9,6 +9,7 @@ pub trait TransactionT: HasInstrument {
     fn amount(&self) -> i32;
     fn price(&self) -> MValue;
     fn fees(&self) -> MValue;
+    fn is_expiry(&self) -> bool;
     fn as_link(self) -> TransactionLink;
 
     fn total_cost(&self) -> MValue {
@@ -23,6 +24,7 @@ pub struct Transaction {
     instrument: Rc<Instrument>,
     price: MValue,
     fees: MValue,
+    is_expiry: bool,
 }
 
 impl Transaction {
@@ -32,6 +34,7 @@ impl Transaction {
         instrument: Rc<Instrument>,
         price: MValue,
         fees: MValue,
+        is_expiry: bool,
     ) -> Rc<Self> {
         assert_ne!(amount, 0);
         Rc::new(Transaction {
@@ -40,6 +43,7 @@ impl Transaction {
             instrument,
             price,
             fees,
+            is_expiry,
         })
     }
 }
@@ -59,6 +63,10 @@ impl TransactionT for Rc<Transaction> {
 
     fn fees(&self) -> MValue {
         self.fees
+    }
+
+    fn is_expiry(&self) -> bool {
+        self.is_expiry
     }
 
     fn as_link(self) -> TransactionLink {

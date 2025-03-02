@@ -15,7 +15,7 @@ impl CloseDate {
 }
 
 impl PropertyValue for CloseDate {
-    type Value = NaiveDate;
+    type Value = (NaiveDate, bool);
 }
 
 impl<T> FormattedProperty<T> for CloseDate
@@ -27,11 +27,12 @@ where
     }
 
     fn format_data(&mut self, t: &T) -> String {
-        t.get(&self).format("%d.%m.%y").to_string()
+        let (date, exp) = t.get(&self);
+        format!("{}{}", date.format("%d.%m.%y"), if exp { "*" } else { "" })
     }
 
     // fn long_data_example(&self) -> String {
     //     static DATE: NaiveDate = NaiveDate::from_ymd_opt(2222, 12, 22).unwrap();
-    //     format!("{}", DATE.format("%d.%m.%y"))
+    //     format!("{}*", DATE.format("%d.%m.%y"))
     // }
 }

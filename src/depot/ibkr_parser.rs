@@ -42,8 +42,9 @@ impl IbkrParser {
         let amount = vals[7].parse().unwrap();
         let price = vals[8].parse().unwrap();
         let fees = -vals[11].parse::<f32>().unwrap();
+        let is_expiry = vals[15].contains("Ep");
 
-        let tx = Transaction::new(date, amount, instrument, price, fees);
+        let tx = Transaction::new(date, amount, instrument, price, fees, is_expiry);
         self.transactions.push(tx);
     }
 

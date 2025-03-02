@@ -48,8 +48,8 @@ impl Property<OpenDate> for Trade {
 }
 
 impl Property<CloseDate> for Trade {
-    fn get(&self, _: &CloseDate) -> NaiveDate {
-        self.close_tx.date().date_naive()
+    fn get(&self, _: &CloseDate) -> (NaiveDate, bool) {
+        (self.close_tx.date().date_naive(), self.close_tx.is_expiry())
     }
 }
 

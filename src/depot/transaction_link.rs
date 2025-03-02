@@ -64,6 +64,10 @@ impl TransactionT for TransactionLink {
         }
     }
 
+    fn is_expiry(&self) -> bool {
+        self.tx.is_expiry()
+    }
+
     fn as_link(self) -> TransactionLink {
         self
     }
