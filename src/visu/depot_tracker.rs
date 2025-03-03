@@ -18,7 +18,7 @@ impl DepotTracker {
         parser.parse("dummy1.csv").unwrap();
         parser.parse("dummy2.csv").unwrap();
 
-        depot.add_transactions(parser.transactions);
+        depot.add_events(parser.events);
 
         Self {
             depot,

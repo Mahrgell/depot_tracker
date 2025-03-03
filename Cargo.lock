@@ -799,6 +799,7 @@ dependencies = [
  "csv",
  "eframe",
  "egui_extras",
+ "regex",
 ]
 
 [[package]]

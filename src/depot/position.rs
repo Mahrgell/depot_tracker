@@ -25,6 +25,13 @@ impl Position {
         self.amount == 0.
     }
 
+    pub fn apply_split(&mut self, split: f32) {
+        self.amount *= split;
+        for tx in &mut self.txs {
+            tx.split(split);
+        }
+    }
+
     pub fn apply_transaction<T: TransactionT>(&mut self, tx: T) -> Option<Trade> {
         assert!(self.instrument.eq(tx.instrument()));
         let tx_a = tx.amount();
