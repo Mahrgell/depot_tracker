@@ -1,6 +1,7 @@
 mod depot;
 mod instruments;
 mod properties;
+mod stock_data;
 mod visu;
 
 use visu::DepotTracker;
