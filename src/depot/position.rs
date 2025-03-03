@@ -11,33 +11,40 @@ use super::{Trade, TransactionLink, TransactionT};
 
 #[derive(Debug)]
 pub struct Position {
-    amount: i32,
+    amount: f32,
     instrument: Rc<Instrument>,
     txs: Vec<TransactionLink>,
 }
 
 impl Position {
-    pub fn amount(&self) -> i32 {
+    pub fn amount(&self) -> f32 {
         self.amount
     }
 
     pub fn is_empty(&self) -> bool {
-        self.amount == 0
+        self.amount == 0.
     }
 
     pub fn apply_transaction<T: TransactionT>(&mut self, tx: T) -> Option<Trade> {
         assert!(self.instrument.eq(tx.instrument()));
         let tx_a = tx.amount();
-        let trade = if tx_a * self.amount < 0 {
-            let (open_txs, close_tx) = match tx_a.abs().cmp(&self.amount.abs()) {
+        let trade = if tx_a * self.amount < 0. {
+            let (open_txs, close_tx) = match tx_a.abs().total_cmp(&self.amount.abs()) {
                 Ordering::Less => {
                     let mut rem = -tx_a;
-                    let mut open_txs = Vec::new();
-                    while rem != 0 {
+                    let mut open_txs: Vec<TransactionLink> = Vec::new();
+                    static EPS: f32 = 0.001;
+                    while rem.abs() > EPS {
+                        if self.txs.is_empty() {
+                            for otx in &open_txs {
+                                dbg!(otx.amount());
+                            }
+                        }
                         if self.txs[0].amount().abs() > rem.abs() {
                             let (open_tx, rem_tx) = self.txs[0].split(rem);
                             open_txs.push(open_tx);
                             self.txs[0] = rem_tx;
+                            break;
                         } else {
                             rem -= self.txs[0].amount();
                             open_txs.push(self.txs.remove(0));
@@ -48,7 +55,7 @@ impl Position {
                 Ordering::Equal => (std::mem::take(&mut self.txs), tx.as_link()),
                 Ordering::Greater => {
                     let open_txs = std::mem::take(&mut self.txs);
-                    let (close_tx, rem_tx) = tx.as_link().split(self.amount);
+                    let (close_tx, rem_tx) = tx.as_link().split(-self.amount);
                     self.txs.push(rem_tx);
                     (open_txs, close_tx)
                 }
@@ -80,7 +87,7 @@ impl HasInstrument for Position {
 }
 
 impl Property<PositionSize> for Position {
-    fn get(&self, _: &PositionSize) -> i32 {
+    fn get(&self, _: &PositionSize) -> f32 {
         self.amount()
     }
 }

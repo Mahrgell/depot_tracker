@@ -15,7 +15,7 @@ impl PositionSize {
 }
 
 impl PropertyValue for PositionSize {
-    type Value = i32;
+    type Value = f32;
 }
 
 impl<T> FormattedProperty<T> for PositionSize
@@ -27,7 +27,13 @@ where
     }
 
     fn format_data(&mut self, t: &T) -> String {
-        t.get(&self).to_string()
+        let val = t.get(&self);
+        let val_i32 = val as i32;
+        if val_i32 as f32 == val {
+            val_i32.to_string()
+        } else {
+            format!("{:.2}", val)
+        }
     }
 
     fn layout(&self) -> egui::Layout {

@@ -30,31 +30,34 @@ impl IbkrParser {
             if vals[4] != "USD" {
                 continue;
             }
-            self.parse_transaction(vals);
+            if self.parse_transaction(vals).is_err() {
+                println!("Failed to parse: {:?}", result);
+            }
         }
 
         Ok(())
     }
 
-    fn parse_transaction(&mut self, vals: Vec<&str>) {
+    fn parse_transaction(&mut self, vals: Vec<&str>) -> Result<(), ()>{
         let date = parse_date_time(vals[6]);
-        let instrument = self.parse_instrument(vals[3], vals[5]);
-        let amount = vals[7].parse().unwrap();
+        let instrument = self.parse_instrument(vals[3], vals[5])?;
+        let amount = vals[7].replace(",", "").parse().unwrap();
         let price = vals[8].parse().unwrap();
         let fees = -vals[11].parse::<f32>().unwrap();
         let is_expiry = vals[15].contains("Ep");
 
         let tx = Transaction::new(date, amount, instrument, price, fees, is_expiry);
         self.transactions.push(tx);
+        Ok(())
     }
 
-    fn parse_instrument(&mut self, itype: &str, name: &str) -> Rc<Instrument> {
+    fn parse_instrument(&mut self, itype: &str, name: &str) -> Result<Rc<Instrument>, ()> {
         let instr = match itype {
             "Stocks" => Instrument::new(Stock::new(name.into()), 0.),
             "Equity and Index Options" => Instrument::new(self.parse_stock_option_name(name), 0.),
-            _ => unreachable!(),
+            _ => return Err(()),
         };
-        self.instruments.add_or_get(instr)
+        Ok(self.instruments.add_or_get(instr))
     }
 
     fn parse_stock_option_name(&mut self, name: &str) -> StockOption {

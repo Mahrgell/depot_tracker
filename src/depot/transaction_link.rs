@@ -9,13 +9,13 @@ use super::{Transaction, TransactionT};
 #[derive(Debug)]
 pub struct TransactionLink {
     tx: Rc<Transaction>,
-    partial: Option<i32>,
+    partial: Option<f32>,
 }
 
 impl TransactionLink {
-    pub fn split(&self, amount: i32) -> (TransactionLink, TransactionLink) {
+    pub fn split(&self, amount: f32) -> (TransactionLink, TransactionLink) {
         let old_a = self.amount();
-        assert!((old_a > amount && amount > 0) || (old_a < amount && amount < 0));
+        assert!((old_a > amount && amount > 0.) || (old_a < amount && amount < 0.));
         (
             TransactionLink {
                 tx: self.tx.clone(),
@@ -46,7 +46,7 @@ impl TransactionT for TransactionLink {
         self.tx.date()
     }
 
-    fn amount(&self) -> i32 {
+    fn amount(&self) -> f32 {
         match self.partial {
             Some(p) => p,
             None => self.tx.amount(),
@@ -59,7 +59,7 @@ impl TransactionT for TransactionLink {
 
     fn fees(&self) -> MValue {
         match self.partial {
-            Some(p) => p as f32 / self.tx.amount() as f32 * self.tx.fees(),
+            Some(p) => p / self.tx.amount() * self.tx.fees(),
             None => self.tx.fees(),
         }
     }

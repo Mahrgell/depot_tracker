@@ -4,23 +4,23 @@ use std::rc::Rc;
 
 use super::TransactionLink;
 
-pub trait TransactionT: HasInstrument {
+pub trait TransactionT: HasInstrument + std::fmt::Debug {
     fn date(&self) -> DateTime<Local>;
-    fn amount(&self) -> i32;
+    fn amount(&self) -> f32;
     fn price(&self) -> MValue;
     fn fees(&self) -> MValue;
     fn is_expiry(&self) -> bool;
     fn as_link(self) -> TransactionLink;
 
     fn total_cost(&self) -> MValue {
-        self.amount() as f32 * self.price() * self.instrument().info().factor() as f32 + self.fees()
+        self.amount() * self.price() * self.instrument().info().factor() as f32 + self.fees()
     }
 }
 
 #[derive(Debug)]
 pub struct Transaction {
     date: DateTime<Local>,
-    amount: i32,
+    amount: f32,
     instrument: Rc<Instrument>,
     price: MValue,
     fees: MValue,
@@ -30,13 +30,13 @@ pub struct Transaction {
 impl Transaction {
     pub fn new(
         date: DateTime<Local>,
-        amount: i32,
+        amount: f32,
         instrument: Rc<Instrument>,
         price: MValue,
         fees: MValue,
         is_expiry: bool,
     ) -> Rc<Self> {
-        assert_ne!(amount, 0);
+        assert_ne!(amount, 0.);
         Rc::new(Transaction {
             date,
             amount,
@@ -53,7 +53,7 @@ impl TransactionT for Rc<Transaction> {
         self.date
     }
 
-    fn amount(&self) -> i32 {
+    fn amount(&self) -> f32 {
         self.amount
     }
 

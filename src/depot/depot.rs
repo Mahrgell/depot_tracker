@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use crate::instruments::{HasInstrument, InstrumentList, InstrumentSpec, MValue};
+use crate::instruments::{HasInstrument, InstrumentList, MValue};
 
 use super::{Position, Trade, Transaction, TransactionT};
 
@@ -60,11 +60,6 @@ impl Depot {
         {
             let pos = &mut self.positions[i];
             if let Some(trade) = pos.apply_transaction(tx) {
-                println!(
-                    "Trade for {} -> Profit: {}",
-                    trade.instrument().info().name(),
-                    trade.profit()
-                );
                 self.trades.push(trade);
             }
             if pos.is_empty() {
