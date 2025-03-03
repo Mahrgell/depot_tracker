@@ -3,11 +3,12 @@ use std::{cmp::Ordering, rc::Rc};
 use chrono::NaiveDate;
 
 use crate::{
+    depot::POSITION_SIZE_EPSILON,
     instruments::{HasInstrument, Instrument, InstrumentSpec, MValue},
     properties::{MarketValue, OpenDate, PositionSize, Price, Property},
 };
 
-use super::{Trade, TransactionLink, TransactionT};
+use super::{misc::round_if_close, Trade, TransactionLink, TransactionT};
 
 #[derive(Debug)]
 pub struct Position {
@@ -18,11 +19,11 @@ pub struct Position {
 
 impl Position {
     pub fn amount(&self) -> f32 {
-        self.amount
+        round_if_close(self.amount)
     }
 
     pub fn is_empty(&self) -> bool {
-        self.amount == 0.
+        self.amount() == 0.
     }
 
     pub fn apply_split(&mut self, split: f32) {
@@ -40,8 +41,7 @@ impl Position {
                 Ordering::Less => {
                     let mut rem = -tx_a;
                     let mut open_txs: Vec<TransactionLink> = Vec::new();
-                    static EPS: f32 = 0.001;
-                    while rem.abs() > EPS {
+                    while rem.abs() > POSITION_SIZE_EPSILON {
                         if self.txs.is_empty() {
                             for otx in &open_txs {
                                 dbg!(otx.amount());

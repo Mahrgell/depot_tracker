@@ -1,6 +1,7 @@
 pub mod depot;
 pub mod event;
 pub mod ibkr_parser;
+mod misc;
 pub mod position;
 pub mod stock_split;
 pub mod trade;
@@ -15,3 +16,5 @@ pub use stock_split::*;
 pub use trade::*;
 pub use transaction::*;
 pub use transaction_link::*;
+
+const POSITION_SIZE_EPSILON: f32 = 0.01;
