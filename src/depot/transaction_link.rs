@@ -10,28 +10,42 @@ use super::{Transaction, TransactionT};
 pub struct TransactionLink {
     tx: Rc<Transaction>,
     partial: Option<f32>,
+    split: Option<f32>,
 }
 
 impl TransactionLink {
-    pub fn split(&self, amount: f32) -> (TransactionLink, TransactionLink) {
+    pub fn partial(&self, amount: f32) -> (TransactionLink, TransactionLink) {
         let old_a = self.amount();
         assert!((old_a > amount && amount > 0.) || (old_a < amount && amount < 0.));
         (
             TransactionLink {
                 tx: self.tx.clone(),
                 partial: Some(amount),
+                split: self.split,
             },
             TransactionLink {
                 tx: self.tx.clone(),
                 partial: Some(old_a - amount),
+                split: self.split,
             },
         )
+    }
+
+    pub fn split(&mut self, split: f32) {
+        self.split = Some(match self.split {
+            Some(old) => old * split,
+            None => split,
+        });
     }
 }
 
 impl From<Rc<Transaction>> for TransactionLink {
     fn from(tx: Rc<Transaction>) -> Self {
-        TransactionLink { tx, partial: None }
+        TransactionLink {
+            tx,
+            partial: None,
+            split: None,
+        }
     }
 }
 
@@ -47,10 +61,11 @@ impl TransactionT for TransactionLink {
     }
 
     fn amount(&self) -> f32 {
-        match self.partial {
-            Some(p) => p,
-            None => self.tx.amount(),
-        }
+        self.split.unwrap_or(1.)
+            * match self.partial {
+                Some(p) => p,
+                None => self.tx.amount(),
+            }
     }
 
     fn price(&self) -> MValue {

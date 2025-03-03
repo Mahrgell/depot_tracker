@@ -41,7 +41,7 @@ impl Position {
                             }
                         }
                         if self.txs[0].amount().abs() > rem.abs() {
-                            let (open_tx, rem_tx) = self.txs[0].split(rem);
+                            let (open_tx, rem_tx) = self.txs[0].partial(rem);
                             open_txs.push(open_tx);
                             self.txs[0] = rem_tx;
                             break;
@@ -55,7 +55,7 @@ impl Position {
                 Ordering::Equal => (std::mem::take(&mut self.txs), tx.as_link()),
                 Ordering::Greater => {
                     let open_txs = std::mem::take(&mut self.txs);
-                    let (close_tx, rem_tx) = tx.as_link().split(-self.amount);
+                    let (close_tx, rem_tx) = tx.as_link().partial(-self.amount);
                     self.txs.push(rem_tx);
                     (open_txs, close_tx)
                 }
