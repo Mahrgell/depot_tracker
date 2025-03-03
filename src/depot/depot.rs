@@ -1,8 +1,6 @@
-use std::rc::Rc;
-
 use crate::instruments::{HasInstrument, InstrumentList, MValue};
 
-use super::{Event, Position, Trade, Transaction, TransactionT};
+use super::{Event, Position, Trade, TransactionT};
 
 #[derive(Debug, Default)]
 pub struct Depot {
