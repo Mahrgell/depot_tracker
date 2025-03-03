@@ -14,6 +14,7 @@ impl DepotTracker {
         let mut depot = Depot::default();
 
         let mut parser = IbkrParser::default();
+        parser.read_renames("renames.dtcfg").unwrap();
         parser.parse("dummy1.csv").unwrap();
         parser.parse("dummy2.csv").unwrap();
 
