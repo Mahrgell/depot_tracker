@@ -27,7 +27,7 @@ where
     T: Property<Profit>,
 {
     fn header(&self) -> String {
-        "Price".into()
+        "Profit".into()
     }
 
     fn format_data(&mut self, t: &T) -> String {
