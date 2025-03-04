@@ -5,7 +5,7 @@ use chrono::NaiveDate;
 use crate::{
     depot::TransactionT,
     instruments::{HasInstrument, Instrument, MValue},
-    properties::{CloseDate, OpenDate, Profit, Property},
+    properties::{CloseDate, OpenDate, PositionSize, Profit, Property},
 };
 
 use super::TransactionLink;
@@ -35,6 +35,12 @@ impl Trade {
 impl HasInstrument for Trade {
     fn instrument(&self) -> &Rc<Instrument> {
         &self.close_tx.instrument()
+    }
+}
+
+impl Property<PositionSize> for Trade {
+    fn get(&self, _: &PositionSize) -> f32 {
+        -self.close_tx.amount()
     }
 }
 

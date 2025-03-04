@@ -2,7 +2,7 @@ use eframe::egui;
 
 use crate::{
     depot::Depot,
-    properties::{CloseDate, InstrumentName, OpenDate, Profit},
+    properties::{CloseDate, InstrumentName, OpenDate, PositionSize, Profit},
     visu::{
         build_table,
         filters::{InstrumentTypeFilter, SymbolFilter},
@@ -19,6 +19,7 @@ impl Trades {
     pub fn show(&mut self, ui: &mut egui::Ui, depot: &Depot) {
         let props = vec![
             InstrumentName::fmt(),
+            PositionSize::fmt(),
             OpenDate::fmt(),
             CloseDate::fmt(),
             Profit::fmt(),
