@@ -19,7 +19,7 @@ impl MarketValue {
 }
 
 impl PropertyValue for MarketValue {
-    type Value = MValue;
+    type Value = Option<MValue>;
 }
 
 impl<T> FormattedProperty<T> for MarketValue
@@ -32,8 +32,13 @@ where
 
     fn format_data(&mut self, t: &T) -> String {
         let val = t.get(&self);
-        self.acc += val;
-        format!("{:.2}", val)
+        match val {
+            Some(val) => {
+                self.acc += val;
+                format!("{:.2}", val)
+            }
+            None => String::new(),
+        }
     }
 
     fn layout(&self) -> egui::Layout {

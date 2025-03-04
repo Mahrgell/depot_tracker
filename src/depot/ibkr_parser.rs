@@ -116,8 +116,8 @@ impl IbkrParser {
             name = on.into();
         }
         let instr = match itype {
-            "Stocks" => Instrument::new(Stock::new(name), 0.),
-            "Equity and Index Options" => Instrument::new(self.parse_stock_option_name(&name), 0.),
+            "Stocks" => Instrument::new(Stock::new(name)),
+            "Equity and Index Options" => Instrument::new(self.parse_stock_option_name(&name)),
             _ => return Err(()),
         };
         Ok(self.instruments.add_or_get(instr))
@@ -126,7 +126,7 @@ impl IbkrParser {
     fn parse_stock_option_name(&mut self, name: &str) -> StockOption {
         let parts: Vec<_> = name.split(' ').collect();
         assert_eq!(parts.len(), 4);
-        let underlying = Instrument::new(Stock::new(parts[0].into()), 0.);
+        let underlying = Instrument::new(Stock::new(parts[0].into()));
         let underlying = self.instruments.add_or_get(underlying);
         let strike = parts[2].parse().unwrap();
         let o_type = match parts[3] {

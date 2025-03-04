@@ -109,7 +109,5 @@ pub fn fetch_candle_data(url: &str) -> Result<Vec<CandleData>, reqwest::Error> {
             }
         }
     }
-    candles.sort_by_key(|cd| cd.date);
-
     Ok(candles)
 }

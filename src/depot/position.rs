@@ -100,14 +100,18 @@ impl Property<PositionSize> for Position {
 }
 
 impl Property<Price> for Position {
-    fn get(&self, p: &Price) -> MValue {
+    fn get(&self, p: &Price) -> Option<MValue> {
         self.instrument.get(p)
     }
 }
 
 impl Property<MarketValue> for Position {
-    fn get(&self, _: &MarketValue) -> MValue {
-        self.amount() as f32 * self.instrument().price() * self.instrument().info().factor() as f32
+    fn get(&self, _: &MarketValue) -> Option<MValue> {
+        Some(
+            self.amount() as f32
+                * self.instrument().price()?
+                * self.instrument().info().factor() as f32,
+        )
     }
 }
 

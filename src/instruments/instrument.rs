@@ -17,10 +17,10 @@ pub struct Instrument {
 }
 
 impl Instrument {
-    pub fn new<I: InstrumentSpec>(instr: I, price: MValue) -> Rc<Self> {
+    pub fn new<I: InstrumentSpec>(instr: I) -> Rc<Self> {
         Rc::new(Self {
             instr: instr.as_wrapped(),
-            data: RwLock::new(InstrumentData { price }),
+            data: RwLock::new(InstrumentData::default()),
         })
     }
 
@@ -32,8 +32,8 @@ impl Instrument {
         &self.instr
     }
 
-    pub fn price(&self) -> MValue {
-        self.data.read().unwrap().price
+    pub fn price(&self) -> Option<MValue> {
+        self.data.read().unwrap().price(None)
     }
 }
 
@@ -81,7 +81,7 @@ impl<T: FormattedProperty<Instrument>> FormattedProperty<Rc<Instrument>> for T {
 }
 
 impl Property<Price> for Instrument {
-    fn get(&self, _: &Price) -> MValue {
+    fn get(&self, _: &Price) -> Option<MValue> {
         self.price()
     }
 }

@@ -17,7 +17,7 @@ impl Price {
 }
 
 impl PropertyValue for Price {
-    type Value = MValue;
+    type Value = Option<MValue>;
 }
 
 impl<T> FormattedProperty<T> for Price
@@ -29,7 +29,11 @@ where
     }
 
     fn format_data(&mut self, t: &T) -> String {
-        format!("{:.2}", t.get(&self))
+        let val = t.get(&self);
+        match val {
+            Some(val) => format!("{:.2}", val),
+            None => String::new(),
+        }
     }
 
     fn long_data_example(&self) -> String {
