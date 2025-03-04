@@ -2,6 +2,7 @@ use chrono::NaiveDate;
 
 use crate::stock_data::CandleData;
 
+#[derive(Debug)]
 pub enum DataSourceError {
     FailedToParse,
     TemporarilyUnavailable,
