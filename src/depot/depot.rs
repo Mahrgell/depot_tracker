@@ -6,14 +6,14 @@ use super::{Event, Position, Trade, TransactionT};
 pub struct Depot {
     positions: Vec<Position>,
     cash: MValue,
-    _instruments: InstrumentList,
+    instruments: InstrumentList,
     events: Vec<Event>,
     trades: Vec<Trade>,
 }
 
 impl Depot {
-    pub fn _instruments(&self) -> &InstrumentList {
-        &self._instruments
+    pub fn instruments(&self) -> &InstrumentList {
+        &self.instruments
     }
 
     pub fn positions(&self) -> &Vec<Position> {
@@ -50,6 +50,10 @@ impl Depot {
     }
 
     fn apply_event(&mut self, ev: Event) {
+        let instr = ev.instrument().clone();
+        let old_instr = instr.clone();
+        assert!(old_instr.eq(&self.instruments.add_or_get(instr)));
+
         match ev {
             Event::Transaction(tx) => {
                 self.cash -= tx.total_cost();
