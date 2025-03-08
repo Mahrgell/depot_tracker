@@ -45,12 +45,7 @@ impl Instruments {
         ui.separator();
         ui.label(format!(
             "Number of data points: {}",
-            stocks[self.selected_index]
-                .1
-                .data()
-                .read()
-                .unwrap()
-                .nb_data_points()
+            stocks[self.selected_index].1.data().nb_data_points()
         ));
         const LOCAL_STORAGE: &str = "stock_data_storage/";
         if ui.button("Load local").clicked() {

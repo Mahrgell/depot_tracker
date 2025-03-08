@@ -1,4 +1,7 @@
-use std::{rc::Rc, sync::RwLock};
+use std::{
+    rc::Rc,
+    sync::{RwLock, RwLockReadGuard},
+};
 
 use crate::{
     properties::{FormattedProperty, InstrumentName, Price, Property},
@@ -35,8 +38,8 @@ impl Instrument {
         &self.instr
     }
 
-    pub fn data(&self) -> &RwLock<InstrumentData> {
-        &self.data
+    pub fn data<'a>(&'a self) -> RwLockReadGuard<'a, InstrumentData> {
+        self.data.read().unwrap()
     }
 
     pub fn price(&self) -> Option<MValue> {
