@@ -5,7 +5,7 @@ use std::{
 
 use crate::{
     properties::{FormattedProperty, InstrumentName, Price, Property},
-    stock_data::sources::{DataSource, DataSourceError},
+    stock_data::sources::{DataSource, DataSourceError, LocalFile},
 };
 
 use super::{InstrumentData, InstrumentSpec, MValue, Stock, StockOption};
@@ -56,6 +56,15 @@ impl Instrument {
         let data_points_before = data.nb_data_points();
         data.add_data(new_candles);
         Ok((new_candles_read, data.nb_data_points() - data_points_before))
+    }
+
+    pub fn save_data_local(&self, lf: &LocalFile) -> Result<(), ()> {
+        let data = self.data.read().unwrap();
+        let candles = data.get_raw();
+        if candles.is_empty() {
+            return Err(());
+        }
+        lf.save_local(self.instr.name().into(), candles)
     }
 }
 

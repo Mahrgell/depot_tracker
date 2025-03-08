@@ -32,4 +32,8 @@ impl InstrumentData {
     pub fn add_data(&mut self, data: Vec<CandleData>) {
         self.candles.add(data);
     }
+
+    pub fn get_raw(&self) -> &Vec<CandleData> {
+        self.candles.candles()
+    }
 }

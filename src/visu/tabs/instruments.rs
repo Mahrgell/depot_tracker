@@ -1,6 +1,10 @@
 use eframe::egui;
 
-use crate::{depot::Depot, instruments::InstrumentWrapped, stock_data::sources::LocalFile};
+use crate::{
+    depot::Depot,
+    instruments::InstrumentWrapped,
+    stock_data::sources::{AlphaVantage, LocalFile},
+};
 
 #[derive(Default)]
 pub struct Instruments {
@@ -48,16 +52,37 @@ impl Instruments {
             stocks[self.selected_index].1.data().nb_data_points()
         ));
         const LOCAL_STORAGE: &str = "stock_data_storage/";
-        if ui.button("Load local").clicked() {
-            let lf = LocalFile::new(LOCAL_STORAGE.into());
-            self.status_response =
-                Some(match stocks[self.selected_index].1.update_data_with(&lf) {
-                    Ok((loaded_dp, new_dp)) => {
-                        format!("Loaded {} data points. ({} new)", loaded_dp, new_dp)
-                    }
-                    Err(e) => format!("Failed to load due to {:?}", e),
-                });
-        }
+        ui.horizontal(|ui| {
+            if ui.button("Load local").clicked() {
+                let lf = LocalFile::new(LOCAL_STORAGE.into());
+                self.status_response =
+                    Some(match stocks[self.selected_index].1.update_data_with(&lf) {
+                        Ok((loaded_dp, new_dp)) => {
+                            format!("Loaded {} data points. ({} new)", loaded_dp, new_dp)
+                        }
+                        Err(e) => format!("Failed to load due to {:?}", e),
+                    });
+            }
+            if ui.button("Save local").clicked() {
+                let lf = LocalFile::new(LOCAL_STORAGE.into());
+                self.status_response =
+                    Some(match stocks[self.selected_index].1.save_data_local(&lf) {
+                        Ok(_) => "Successfully saved".into(),
+                        Err(_) => "Something failed when saving".into(),
+                    });
+            }
+            if ui.button("Load from AV").clicked() {
+                let av = AlphaVantage::from_apikey_file("alphavantage.dtkey").unwrap();
+                self.status_response =
+                    Some(match stocks[self.selected_index].1.update_data_with(&av) {
+                        Ok((loaded_dp, new_dp)) => {
+                            format!("Loaded {} data points. ({} new)", loaded_dp, new_dp)
+                        }
+                        Err(e) => format!("Failed to load due to {:?}", e),
+                    });
+            }
+        });
+
         if let Some(sr) = self.status_response.as_ref() {
             ui.label(sr);
         }
