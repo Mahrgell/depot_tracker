@@ -1,4 +1,8 @@
+use std::ops::RangeInclusive;
+
+use chrono::{Datelike, NaiveDate};
 use eframe::egui;
+use egui_plot::{GridMark, Line, Plot, PlotPoints};
 
 const LOCAL_STORAGE: &str = "stock_data_storage/";
 
@@ -83,5 +87,77 @@ impl Instruments {
         if let Some(sr) = self.status_response.as_ref() {
             ui.label(sr);
         }
+
+        let data = stocks[self.selected_index].1.data();
+        let raw = data.get_raw();
+        if raw.is_empty() {
+            return;
+        }
+        let min_date = raw.first().unwrap().date.num_days_from_ce() as f64;
+        let max_date = raw.last().unwrap().date.num_days_from_ce() as f64;
+
+        let min_price = raw.iter().map(|d| d.close).fold(f32::INFINITY, f32::min);
+        let max_price = raw
+            .iter()
+            .map(|d| d.close)
+            .fold(f32::NEG_INFINITY, f32::max);
+
+        let points: PlotPoints = raw
+            .iter()
+            .map(|d| [d.date.num_days_from_ce() as f64, d.close as f64])
+            .collect::<Vec<_>>()
+            .into();
+
+        let line = Line::new(points);
+
+        let x_formatter = |mark: GridMark, _range: &RangeInclusive<f64>| {
+            let days = mark.value as i32;
+            let date = NaiveDate::from_num_days_from_ce_opt(days).unwrap();
+            date.format("%Y").to_string()
+        };
+
+        Plot::new("price_chart")
+            .view_aspect(2.0)
+            .include_x(min_date)
+            .include_x(max_date)
+            .include_y(min_price as f64)
+            .include_y(max_price as f64)
+            .x_axis_formatter(x_formatter)
+            .x_grid_spacer(|gi| {
+                let mut marks = Vec::new();
+                let start = gi.bounds.0 as i32;
+                let end = gi.bounds.1 as i32;
+                let start_year = NaiveDate::from_num_days_from_ce_opt(start)
+                    .unwrap()
+                    .year_ce()
+                    .1;
+                let end_year = NaiveDate::from_num_days_from_ce_opt(end)
+                    .unwrap()
+                    .year_ce()
+                    .1;
+                for y in start_year..=end_year {
+                    for m in [1] {
+                        let date = NaiveDate::from_ymd_opt(y as i32, m, 1).unwrap();
+                        let days = date.num_days_from_ce();
+                        if days < start || days > end {
+                            continue;
+                        }
+                        marks.push(GridMark {
+                            value: days as f64,
+                            step_size: if y % 5 == 0 { 5. * 365. } else { 1. * 365. },
+                        });
+                    }
+                }
+
+                marks
+            })
+            .label_formatter(|_name, value| {
+                let days = value.x as i32;
+                let date = NaiveDate::from_num_days_from_ce_opt(days).unwrap();
+                format!("{}: {:.2}", date.format("%d.%m.%y").to_string(), value.y)
+            })
+            .show(ui, |plot_ui| {
+                plot_ui.line(line);
+            });
     }
 }
