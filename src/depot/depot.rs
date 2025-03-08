@@ -1,4 +1,4 @@
-use crate::instruments::{HasInstrument, InstrumentList, MValue};
+use crate::instruments::{HasInstrument, InstrumentList, InstrumentSpec, MValue};
 
 use super::{Event, Position, Trade, TransactionT};
 
@@ -53,6 +53,14 @@ impl Depot {
         let instr = ev.instrument().clone();
         let old_instr = instr.clone();
         assert!(old_instr.eq(&self.instruments.add_or_get(instr)));
+
+        let mut related = Vec::new();
+        old_instr.info().get_related_instruments(&mut related);
+
+        for i in related {
+            let old_instr = i.clone();
+            assert!(old_instr.eq(&self.instruments.add_or_get(i)));
+        }
 
         match ev {
             Event::Transaction(tx) => {

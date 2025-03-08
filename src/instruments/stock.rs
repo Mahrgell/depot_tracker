@@ -1,4 +1,6 @@
-use super::{instrument_spec::InstrumentSpec, InstrumentWrapped};
+use std::rc::Rc;
+
+use super::{instrument_spec::InstrumentSpec, Instrument, InstrumentWrapped};
 
 #[derive(Debug, PartialEq)]
 pub struct Stock {
@@ -31,4 +33,6 @@ impl InstrumentSpec for Stock {
     fn matches_symbol(&self, symbol: &str, _include_underlying: bool) -> bool {
         self.symbol.contains(symbol)
     }
+
+    fn get_related_instruments(&self, _res: &mut Vec<Rc<Instrument>>) {}
 }

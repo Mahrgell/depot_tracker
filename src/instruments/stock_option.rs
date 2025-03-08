@@ -70,4 +70,11 @@ impl InstrumentSpec for StockOption {
                 .info()
                 .matches_symbol(symbol, include_underlying)
     }
+
+    fn get_related_instruments(&self, res: &mut Vec<Rc<Instrument>>) {
+        if res.iter().find(|&i| i.eq(&self.underlying)).is_none() {
+            res.push(self.underlying.clone());
+            self.underlying.info().get_related_instruments(res);
+        }
+    }
 }

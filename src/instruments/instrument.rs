@@ -96,6 +96,10 @@ impl InstrumentSpec for InstrumentWrapped {
         self.to_spec().factor()
     }
 
+    fn get_related_instruments(&self, res: &mut Vec<Rc<Instrument>>) {
+        self.to_spec().get_related_instruments(res)
+    }
+
     fn matches_symbol(&self, symbol: &str, include_underlying: bool) -> bool {
         self.to_spec().matches_symbol(symbol, include_underlying)
     }
