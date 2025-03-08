@@ -1,6 +1,9 @@
 use std::{rc::Rc, sync::RwLock};
 
-use crate::properties::{FormattedProperty, InstrumentName, Price, Property};
+use crate::{
+    properties::{FormattedProperty, InstrumentName, Price, Property},
+    stock_data::sources::{DataSource, DataSourceError},
+};
 
 use super::{InstrumentData, InstrumentSpec, MValue, Stock, StockOption};
 
@@ -38,6 +41,18 @@ impl Instrument {
 
     pub fn price(&self) -> Option<MValue> {
         self.data.read().unwrap().price(None)
+    }
+
+    pub fn update_data_with(
+        &self,
+        ds: &impl DataSource,
+    ) -> Result<(usize, usize), DataSourceError> {
+        let new_candles = ds.get_data(self.instr.name().into(), None, None)?;
+        let new_candles_read = new_candles.len();
+        let mut data = self.data.write().unwrap();
+        let data_points_before = data.nb_data_points();
+        data.add_data(new_candles);
+        Ok((new_candles_read, data.nb_data_points() - data_points_before))
     }
 }
 

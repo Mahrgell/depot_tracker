@@ -1,6 +1,6 @@
 use chrono::NaiveDate;
 
-use crate::stock_data::SortedCandles;
+use crate::stock_data::{CandleData, SortedCandles};
 
 #[derive(Debug, Default)]
 pub struct InstrumentData {
@@ -27,5 +27,9 @@ impl InstrumentData {
             }
             None => self.candles.candles().last().map(|c| c.close),
         }
+    }
+
+    pub fn add_data(&mut self, data: Vec<CandleData>) {
+        self.candles.add(data);
     }
 }
