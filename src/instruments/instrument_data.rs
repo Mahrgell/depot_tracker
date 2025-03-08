@@ -8,6 +8,10 @@ pub struct InstrumentData {
 }
 
 impl InstrumentData {
+    pub fn nb_data_points(&self) -> usize {
+        self.candles.candles().len()
+    }
+
     pub fn price(&self, date: Option<NaiveDate>) -> Option<f32> {
         match date {
             Some(date) => {

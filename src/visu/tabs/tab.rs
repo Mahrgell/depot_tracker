@@ -2,17 +2,19 @@ use eframe::egui::{self, Color32, Stroke, Vec2};
 
 use crate::depot::Depot;
 
-use super::Trades;
+use super::{Instruments, Trades};
 
 pub enum Tab {
     Overview,
     Trades(Trades),
+    Instruments(Instruments),
     Chart,
 }
 
 impl Tab {
     pub fn show(&mut self, ui: &mut egui::Ui, depot: &Depot) {
         match self {
+            Tab::Instruments(i) => i.show(ui, depot),
             Tab::Overview => super::overview::show(ui, depot),
             Tab::Trades(t) => t.show(ui, depot),
             Tab::Chart => show_chart(ui),

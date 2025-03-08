@@ -2,7 +2,7 @@ use eframe::egui::{CentralPanel, Context, SidePanel};
 
 use crate::depot::{Depot, IbkrParser};
 
-use super::tabs::{Tab, Trades};
+use super::tabs::{Instruments, Tab, Trades};
 
 pub struct DepotTracker {
     depot: Depot,
@@ -35,6 +35,9 @@ impl eframe::App for DepotTracker {
             }
             if ui.button("Trades").clicked() {
                 self.active_tab = Tab::Trades(Trades::default());
+            }
+            if ui.button("Instruments").clicked() {
+                self.active_tab = Tab::Instruments(Instruments::default());
             }
             if ui.button("Chart").clicked() {
                 self.active_tab = Tab::Chart;

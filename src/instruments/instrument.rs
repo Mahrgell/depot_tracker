@@ -32,6 +32,10 @@ impl Instrument {
         &self.instr
     }
 
+    pub fn data(&self) -> &RwLock<InstrumentData> {
+        &self.data
+    }
+
     pub fn price(&self) -> Option<MValue> {
         self.data.read().unwrap().price(None)
     }
